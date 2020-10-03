@@ -23,6 +23,10 @@ function displayFilm(filmData) {
   const characters = filmData.characters;
   // loop through all characters
   characters.forEach(characterurl => {
+    // First create character placeholder - and append that to the movie-clone
+    const placeholder = document.createElement("li");
+    placeholder.textContent = "-placeholder-";
+    clone.querySelector("#characters").appendChild(placeholder);
 
     // load the character-url
     loadJson(characterurl, displayCharacter);
@@ -34,8 +38,12 @@ function displayFilm(filmData) {
       // Put the real characterdata into the template
       characterclone.querySelector("[data-field=name]").textContent = characterData.name;
       
-      // append to the list of characters in the list of clones
-      clone.querySelector("#characters").appendChild(characterclone);
+      // and replace the placeholder with the characterclone
+      placeholder.replaceWith(characterclone);
+
+      // in stead of trying to add it to the original - no longer existing - clone
+
+      // clone.querySelector("#characters").appendChild(characterclone);
       // ERROR: this fails because the clone no longer exists ... !!!
     }
   });
