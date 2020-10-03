@@ -22,13 +22,22 @@ function displayFilm(filmData) {
 
   const characters = filmData.characters;
   // loop through all characters
-  characters.forEach(character => {
-    // create a clone for each one
-    const characterclone = document.querySelector("#character_template").content.cloneNode(true);
-    // TEST: Just put the character-data (the url) in the output for now
-    characterclone.querySelector("[data-field=name]").textContent = character;
-    // append to the list of characters in the list of clones
-    clone.querySelector("#characters").appendChild(characterclone);
+  characters.forEach(characterurl => {
+
+    // load the character-url
+    loadJson(characterurl, displayCharacter);
+
+    function displayCharacter(characterData) {
+      console.log(`Display character ${characterData.name}`);
+      // create a clone for each one
+      const characterclone = document.querySelector("#character_template").content.cloneNode(true);
+      // Put the real characterdata into the template
+      characterclone.querySelector("[data-field=name]").textContent = characterData.name;
+      
+      // append to the list of characters in the list of clones
+      clone.querySelector("#characters").appendChild(characterclone);
+      // ERROR: this fails because the clone no longer exists ... !!!
+    }
   });
 
   document.querySelector("#movies").appendChild(clone);
