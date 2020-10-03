@@ -4,11 +4,34 @@ window.addEventListener("DOMContentLoaded", start);
 
 function start() {
   console.log("start");
-  loadJson("https://swapi.dev/api/films/1/", displayFilm);
+  brokerGetObject("https://swapi.dev/api/films/", displayAllFilms);
 }
 
 function loadJson(url, callback) {
   fetch(url).then(resp => resp.json()).then(json => callback(json));
+}
+
+// The Broker gets you all the objects from the API - it also caches them,
+// so you don't need to 
+function brokerGetObject(url, callback) {
+  // check if url exists in cache
+  if (brokerCache[url]) {
+    const json = brokerCache[url];
+    callback(json);
+  } else {
+    fetch(url).then(resp => resp.json()).then(json => {
+      brokerCache[url] = json;
+      callback(json);
+    })
+  }
+}
+
+const brokerCache = {};
+
+
+function displayAllFilms(allFilmData) {
+  const films = allFilmData.results;
+  films.forEach(displayFilm);
 }
 
 
@@ -29,7 +52,7 @@ function displayFilm(filmData) {
     clone.querySelector("#characters").appendChild(placeholder);
 
     // load the character-url
-    loadJson(characterurl, displayCharacter);
+    brokerGetObject(characterurl, displayCharacter);
 
     function displayCharacter(characterData) {
       console.log(`Display character ${characterData.name}`);
